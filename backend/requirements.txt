@@ -1,0 +1,8 @@
+tensorflow==1.14.0
+blend-modes==2.1.0
+Flask==1.0.3
+numexpr==2.6.9
+Keras==2.2.4
+opencv-python==4.1.1.26
+h5py==2.10.0
+flask-cors==3.0.10

@@ -2,7 +2,7 @@ import React, { ChangeEvent, useState } from 'react';
 import './App.css';
 import AddButton from './components/AddButton';
 import loadImage, { LoadImageResult } from 'blueimp-load-image';
-import { API_KEY, API_URL, BASE64_IMAGE_HEADER } from './Constants';
+import { API_URL } from './Constants';
 
 function App() {
   const [result, setResult] = useState<string | null>(null)
@@ -19,16 +19,14 @@ function App() {
         let image = imageData.image as HTMLCanvasElement
         
         let imageBase64 = image.toDataURL("image/png")
-        let imageBase64Data = imageBase64.replace(BASE64_IMAGE_HEADER, "")
         let data = {
-          image_file_b64: imageBase64Data,
+          b64_img: imageBase64,
         }
-        const response = await fetch(API_URL, {
+        const response = await fetch(API_URL + '/upload', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'x-api-key': API_KEY
           },
           body: JSON.stringify(data)
         });
@@ -38,8 +36,8 @@ function App() {
         }
 
         const result = await response.json();
-        const base64Result = BASE64_IMAGE_HEADER + result.result_b64
-        setResult(base64Result)
+        const imagePath = API_URL + result.path
+        setResult(imagePath)
       })
       
       .catch(error => {
