@@ -3,6 +3,12 @@ import './App.css'
 import AddButton from './components/AddButton'
 import loadImage, { LoadImageResult } from 'blueimp-load-image'
 import { API_KEY, API_URL, BASE64_IMAGE_HEADER } from './Constants'
+import Archive from './components/Archive'
+const DUMMY_FOLDERS = [
+	{ name: 'Untitled folder', numberOfImages: 10 },
+	{ name: 'Presidents', numberOfImages: 1 },
+	{ name: 'cats', numberOfImages: 0 },
+]
 
 function App() {
 	const [result, setResult] = useState<string | null>(null)
@@ -55,6 +61,7 @@ function App() {
 
 	return (
 		<div className="App">
+			<Archive folders={DUMMY_FOLDERS} />
 			<header className="App-header">
 				{!result && <AddButton onImageAdd={onImageAdd} />}
 				{result && <img src={result} width={300} alt="result from the API" />}
