@@ -15,7 +15,7 @@ import DialogActions from '@mui/material/DialogActions'
 
 const AppWrapper = styled.div`
 	position: relative;
-	max-width: 820px;
+	max-width: 920px;
 	margin: 0 auto;
 	padding: 16px;
 `
