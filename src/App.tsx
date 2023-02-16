@@ -1,42 +1,32 @@
 import React, {
 	ChangeEvent,
 	useCallback,
+	useContext,
 	useEffect,
-	useRef,
 	useState,
 } from 'react'
 import './App.css'
 import AddButton from './components/AddButton'
 import loadImage, { LoadImageResult } from 'blueimp-load-image'
 import { API_KEY, API_URL, BASE64_IMAGE_HEADER } from './Constants'
-import Fab from '@mui/material/Fab'
-import AddIcon from '@mui/icons-material/Add'
 import Archive from './components/Archive'
-import {
-	getAllFolders,
-	initializeStore,
-	PersitedFolder,
-	saveImage,
-} from './store'
+import { getAllFolders, PersitedFolder, saveImage } from './store'
+import { LocalStoreContext } from '.'
 
 function App() {
-	const storeRef = useRef<LocalForage>()
-	const [defaultFolderId, setDefaultFolderId] = useState<string | null>(null)
+	const { store, defaultFolderId } = useContext(LocalStoreContext)
 	const [folderData, setFolderData] = useState<PersitedFolder[]>([])
 	const [result, setResult] = useState<string | null>(null)
+	const [isNewFolderDialogOpen, setIsNewFolderDialogOpen] = useState(false)
 
 	useEffect(() => {
 		async function initializeState() {
-			const { store, defaultFolderId } = await initializeStore()
-			storeRef.current = store
-			setDefaultFolderId(defaultFolderId)
-
 			const folderData = await getAllFolders(store)
 			setFolderData(folderData)
 		}
 
 		initializeState()
-	}, [])
+	}, [store])
 
 	let uploadImageToServer = (file: File) => {
 		return loadImage(file, {
@@ -79,11 +69,9 @@ function App() {
 
 	const storeNewImageInDefaultFolder = useCallback(
 		async (image: string) => {
-			if (defaultFolderId && storeRef.current) {
-				await saveImage(storeRef.current, defaultFolderId, image)
-			}
+			await saveImage(store, defaultFolderId, image)
 		},
-		[defaultFolderId]
+		[defaultFolderId, store]
 	)
 
 	let onImageAdd = useCallback(
