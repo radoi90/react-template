@@ -71,6 +71,7 @@
     "arrowParens": "avoid"
   },
   "devDependencies": {
-    "@types/blueimp-load-image": "^5.14.4"
+    "@types/blueimp-load-image": "^5.14.4",
+    "@types/styled-components": "^5.1.26"
   }
 }
