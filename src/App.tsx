@@ -21,7 +21,7 @@ const AppWrapper = styled.div`
 `
 
 const FabWrapper = styled.div`
-	position: absolute;
+	position: fixed;
 	z-index: 1;
 	bottom: 0;
 	right: 0;
@@ -136,7 +136,11 @@ function App() {
 	return (
 		<>
 			<AppWrapper>
-				<Archive folders={folderData} onNewFolderClick={handleNewFolderClick} />
+				<Archive
+					folders={folderData}
+					onFolderRename={reloadFolderData}
+					onNewFolderClick={handleNewFolderClick}
+				/>
 				<NewFolderContainer
 					open={isNewFolderDialogOpen}
 					onFlowEnd={handleNewFolderFlowEnded}
@@ -153,17 +157,17 @@ function App() {
 						<Button onClick={() => setIsResultDialogOpen(false)}>Close</Button>
 					</DialogActions>
 				</Dialog>
+				<FabWrapper>
+					<Button
+						variant="contained"
+						component="label"
+						endIcon={<CloudUploadIcon />}
+					>
+						<input hidden accept="image/*" type="file" onChange={onImageAdd} />
+						Upload image
+					</Button>
+				</FabWrapper>
 			</AppWrapper>
-			<FabWrapper>
-				<Button
-					variant="contained"
-					component="label"
-					endIcon={<CloudUploadIcon />}
-				>
-					<input hidden accept="image/*" type="file" onChange={onImageAdd} />
-					Upload image
-				</Button>
-			</FabWrapper>
 		</>
 	)
 }

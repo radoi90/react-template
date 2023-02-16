@@ -11,9 +11,10 @@ import Images from './FolderImages'
 export type Props = {
 	name: string
 	images: string[]
+	onRenameClick: () => void
 }
 
-const Folder: FC<Props> = ({ name, images }) => {
+const Folder: FC<Props> = ({ name, images, onRenameClick }) => {
 	const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
 	const onViewImagesHandler = useCallback(() => {
 		setIsImageDialogOpen(true)
@@ -34,7 +35,9 @@ const Folder: FC<Props> = ({ name, images }) => {
 					<Button size="small" onClick={onViewImagesHandler}>
 						View images
 					</Button>
-					<Button size="small">Rename</Button>
+					<Button size="small" onClick={onRenameClick}>
+						Rename
+					</Button>
 				</CardActions>
 			</Card>
 			{isImageDialogOpen && (

@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import { FC } from 'react'
 import styled from 'styled-components'
-import Folder from '../Folder'
+import Folder from '../../containers/Folder'
 
 interface FolderData {
 	id: string
@@ -11,6 +11,7 @@ interface FolderData {
 
 type Props = {
 	folders: FolderData[]
+	onFolderRename: () => void
 	onNewFolderClick: () => void
 }
 
@@ -24,7 +25,7 @@ const FolderWrapper = styled.div`
 	padding: 16px;
 `
 
-const Archive: FC<Props> = ({ folders, onNewFolderClick }) => (
+const Archive: FC<Props> = ({ folders, onFolderRename, onNewFolderClick }) => (
 	<div>
 		<h1>Archive</h1>
 		<Button variant="outlined" onClick={onNewFolderClick}>
@@ -33,7 +34,12 @@ const Archive: FC<Props> = ({ folders, onNewFolderClick }) => (
 		<FoldersContainer>
 			{folders.map(folder => (
 				<FolderWrapper key={folder.id}>
-					<Folder name={folder.name} images={folder.images} />
+					<Folder
+						id={folder.id}
+						name={folder.name}
+						images={folder.images}
+						onRename={onFolderRename}
+					/>
 				</FolderWrapper>
 			))}
 		</FoldersContainer>
