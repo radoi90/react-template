@@ -77,7 +77,6 @@ function App() {
 				const result = await response.json()
 				const base64Result = BASE64_IMAGE_HEADER + result.result_b64
 				setResult(base64Result)
-				setIsNewFolderDialogOpen(true)
 
 				return base64Result
 			})
@@ -109,6 +108,7 @@ function App() {
 				if (processedImage) {
 					await storeNewImageInDefaultFolder(processedImage)
 					reloadFolderData()
+					setIsResultDialogOpen(true)
 				} else {
 					console.error('Image failed to be processed')
 				}
