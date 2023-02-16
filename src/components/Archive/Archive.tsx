@@ -17,6 +17,11 @@ type Props = {
 const FoldersContainer = styled.div`
 	display: flex;
 	flex-flow: row wrap;
+	margin: 16px -16px;
+`
+
+const FolderWrapper = styled.div`
+	padding: 16px;
 `
 
 const Archive: FC<Props> = ({ folders, onNewFolderClick }) => (
@@ -27,7 +32,9 @@ const Archive: FC<Props> = ({ folders, onNewFolderClick }) => (
 		</Button>
 		<FoldersContainer>
 			{folders.map(folder => (
-				<Folder key={folder.id} name={folder.name} images={folder.images} />
+				<FolderWrapper key={folder.id}>
+					<Folder name={folder.name} images={folder.images} />
+				</FolderWrapper>
 			))}
 		</FoldersContainer>
 	</div>
