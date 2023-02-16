@@ -12,6 +12,7 @@ interface FolderData {
 type Props = {
 	folders: FolderData[]
 	onFolderRename: () => void
+	onImageMove: () => void
 	onNewFolderClick: () => void
 }
 
@@ -25,7 +26,12 @@ const FolderWrapper = styled.div`
 	padding: 16px;
 `
 
-const Archive: FC<Props> = ({ folders, onFolderRename, onNewFolderClick }) => (
+const Archive: FC<Props> = ({
+	folders,
+	onFolderRename,
+	onImageMove,
+	onNewFolderClick,
+}) => (
 	<div>
 		<h1>Archive</h1>
 		<Button variant="outlined" onClick={onNewFolderClick}>
@@ -36,9 +42,11 @@ const Archive: FC<Props> = ({ folders, onFolderRename, onNewFolderClick }) => (
 				<FolderWrapper key={folder.id}>
 					<Folder
 						id={folder.id}
+						folders={folders}
 						name={folder.name}
 						images={folder.images}
 						onRename={onFolderRename}
+						onImageMove={onImageMove}
 					/>
 				</FolderWrapper>
 			))}

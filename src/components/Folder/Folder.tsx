@@ -12,9 +12,15 @@ export type Props = {
 	name: string
 	images: string[]
 	onRenameClick: () => void
+	onImageMoveClick: (imageId: string) => void
 }
 
-const Folder: FC<Props> = ({ name, images, onRenameClick }) => {
+const Folder: FC<Props> = ({
+	name,
+	images,
+	onRenameClick,
+	onImageMoveClick,
+}) => {
 	const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
 	const onViewImagesHandler = useCallback(() => {
 		setIsImageDialogOpen(true)
@@ -44,6 +50,7 @@ const Folder: FC<Props> = ({ name, images, onRenameClick }) => {
 				<Images
 					folderName={name}
 					images={images}
+					onMoveClick={onImageMoveClick}
 					onClose={() => {
 						setIsImageDialogOpen(false)
 					}}

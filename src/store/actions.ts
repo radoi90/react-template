@@ -29,3 +29,20 @@ export async function getAllFolders(store: LocalForage): Promise<PersitedFolder[
 
 	return folders
 }
+
+export async function moveImage(store: LocalForage, image: string, sourceFolderId: string, destinationFolderId: string) {
+	const sourceFolder = await store.getItem<FolderData>(sourceFolderId)
+
+	if (sourceFolder !== null) {
+		const sourceImages = sourceFolder.images.filter(img => img !== image)
+		store.setItem<FolderData>(sourceFolderId, { ...sourceFolder, images: sourceImages })
+	}
+
+	if (destinationFolderId !== null) {
+		const destinationFolder = await store.getItem<FolderData>(destinationFolderId)
+
+		if (destinationFolder !== null) {
+			store.setItem<FolderData>(destinationFolderId, { ...destinationFolder, images: [...destinationFolder.images, image] })
+		}
+	}
+}

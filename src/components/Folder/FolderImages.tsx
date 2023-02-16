@@ -13,9 +13,10 @@ type Props = {
 	folderName: string
 	images: string[]
 	onClose: () => void
+	onMoveClick: (image: string) => void
 }
 
-const Images: FC<Props> = ({ images, folderName, onClose }) => (
+const Images: FC<Props> = ({ images, folderName, onClose, onMoveClick }) => (
 	<Dialog open onClose={onClose}>
 		<DialogTitle>{folderName}</DialogTitle>
 		<DialogContent>
@@ -30,7 +31,12 @@ const Images: FC<Props> = ({ images, folderName, onClose }) => (
 							/>
 							<ImageListItemBar
 								actionIcon={
-									<IconButton sx={{ color: 'rgba(255, 255, 255, 0.54)' }}>
+									<IconButton
+										sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+										onClick={() => {
+											onMoveClick(image)
+										}}
+									>
 										<DriveFileMoveIcon />
 									</IconButton>
 								}

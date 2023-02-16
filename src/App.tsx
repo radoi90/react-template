@@ -139,6 +139,7 @@ function App() {
 				<Archive
 					folders={folderData}
 					onFolderRename={reloadFolderData}
+					onImageMove={reloadFolderData}
 					onNewFolderClick={handleNewFolderClick}
 				/>
 				<NewFolderContainer
