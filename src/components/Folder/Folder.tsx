@@ -5,27 +5,48 @@ import {
 	CardContent,
 	Typography,
 } from '@mui/material'
-import { FC, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
+import Images from './FolderImages'
 
 export type Props = {
 	name: string
-	numberOfImages: number
+	images: string[]
 }
 
-const Folder: FC<Props> = ({ name, numberOfImages }) => {
+const Folder: FC<Props> = ({ name, images }) => {
+	const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
+	const onViewImagesHandler = useCallback(() => {
+		setIsImageDialogOpen(true)
+	}, [])
+
+	const imagesCount = images.length
+
 	return (
-		<Card sx={{ minWidth: 275 }}>
-			<CardContent>
-				<Typography variant="h5">{name}</Typography>
-				<Typography sx={{ mb: 1.5 }} color="text.secondary">
-					{numberOfImages} {numberOfImages === 1 ? 'image' : 'images'}
-				</Typography>
-			</CardContent>
-			<CardActions>
-				<Button size="small">View images</Button>
-				<Button size="small">Rename</Button>
-			</CardActions>
-		</Card>
+		<>
+			<Card sx={{ minWidth: 275 }}>
+				<CardContent>
+					<Typography variant="h5">{name}</Typography>
+					<Typography sx={{ mb: 1.5 }} color="text.secondary">
+						{imagesCount} {imagesCount === 1 ? 'image' : 'images'}
+					</Typography>
+				</CardContent>
+				<CardActions>
+					<Button size="small" onClick={onViewImagesHandler}>
+						View images
+					</Button>
+					<Button size="small">Rename</Button>
+				</CardActions>
+			</Card>
+			{isImageDialogOpen && (
+				<Images
+					folderName={name}
+					images={images}
+					onClose={() => {
+						setIsImageDialogOpen(false)
+					}}
+				/>
+			)}
+		</>
 	)
 }
 

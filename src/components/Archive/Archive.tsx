@@ -27,11 +27,7 @@ const Archive: FC<Props> = ({ folders, onNewFolderClick }) => (
 		</Button>
 		<FoldersContainer>
 			{folders.map(folder => (
-				<Folder
-					key={folder.id}
-					name={folder.name}
-					numberOfImages={folder.images.length}
-				/>
+				<Folder key={folder.id} name={folder.name} images={folder.images} />
 			))}
 		</FoldersContainer>
 	</div>
