@@ -1,20 +1,45 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, {
+	ChangeEvent,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from 'react'
 import './App.css'
 import AddButton from './components/AddButton'
 import loadImage, { LoadImageResult } from 'blueimp-load-image'
 import { API_KEY, API_URL, BASE64_IMAGE_HEADER } from './Constants'
+import Fab from '@mui/material/Fab'
+import AddIcon from '@mui/icons-material/Add'
 import Archive from './components/Archive'
-const DUMMY_FOLDERS = [
-	{ name: 'Untitled folder', numberOfImages: 10 },
-	{ name: 'Presidents', numberOfImages: 1 },
-	{ name: 'cats', numberOfImages: 0 },
-]
+import {
+	getAllFolders,
+	initializeStore,
+	PersitedFolder,
+	saveImage,
+} from './store'
 
 function App() {
+	const storeRef = useRef<LocalForage>()
+	const [defaultFolderId, setDefaultFolderId] = useState<string | null>(null)
+	const [folderData, setFolderData] = useState<PersitedFolder[]>([])
 	const [result, setResult] = useState<string | null>(null)
 
+	useEffect(() => {
+		async function initializeState() {
+			const { store, defaultFolderId } = await initializeStore()
+			storeRef.current = store
+			setDefaultFolderId(defaultFolderId)
+
+			const folderData = await getAllFolders(store)
+			setFolderData(folderData)
+		}
+
+		initializeState()
+	}, [])
+
 	let uploadImageToServer = (file: File) => {
-		loadImage(file, {
+		return loadImage(file, {
 			maxWidth: 400,
 			maxHeight: 400,
 			canvas: true,
@@ -44,6 +69,7 @@ function App() {
 				const result = await response.json()
 				const base64Result = BASE64_IMAGE_HEADER + result.result_b64
 				setResult(base64Result)
+				return base64Result
 			})
 
 			.catch(error => {
@@ -51,21 +77,41 @@ function App() {
 			})
 	}
 
-	let onImageAdd = (e: ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files[0]) {
-			uploadImageToServer(e.target.files[0])
-		} else {
-			console.error('No file was picked')
-		}
-	}
+	const storeNewImageInDefaultFolder = useCallback(
+		async (image: string) => {
+			if (defaultFolderId && storeRef.current) {
+				await saveImage(storeRef.current, defaultFolderId, image)
+			}
+		},
+		[defaultFolderId]
+	)
+
+	let onImageAdd = useCallback(
+		async (e: ChangeEvent<HTMLInputElement>) => {
+			if (e.target.files && e.target.files[0]) {
+				const processedImage = await uploadImageToServer(e.target.files[0])
+				if (processedImage) {
+					await storeNewImageInDefaultFolder(processedImage)
+				} else {
+					console.error('Image failed to be processed')
+				}
+			} else {
+				console.error('No file was picked')
+			}
+		},
+		[storeNewImageInDefaultFolder]
+	)
 
 	return (
 		<div className="App">
-			<Archive folders={DUMMY_FOLDERS} />
+			<Archive folders={folderData} />
 			<header className="App-header">
 				{!result && <AddButton onImageAdd={onImageAdd} />}
 				{result && <img src={result} width={300} alt="result from the API" />}
 			</header>
+			<Fab color="primary" aria-label="add">
+				<AddIcon />
+			</Fab>
 		</div>
 	)
 }
