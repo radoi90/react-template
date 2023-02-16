@@ -4,14 +4,23 @@ import './index.css'
 import App from './App'
 import { initializeStore } from './store'
 
-const { store, defaultFolderId } = await initializeStore()
-export const LocalStoreContext = createContext({ store, defaultFolderId })
+type LocalStoreContextType = {
+	store: LocalForage | null
+	defaultFolderId: string | null
+}
 
-ReactDOM.render(
-	<React.StrictMode>
-		<LocalStoreContext.Provider value={{ store, defaultFolderId }}>
-			<App />
-		</LocalStoreContext.Provider>
-	</React.StrictMode>,
-	document.getElementById('root')
-)
+export const LocalStoreContext = createContext<LocalStoreContextType>({
+	store: null,
+	defaultFolderId: null,
+})
+
+initializeStore().then(({ store, defaultFolderId }) => {
+	ReactDOM.render(
+		<React.StrictMode>
+			<LocalStoreContext.Provider value={{ store, defaultFolderId }}>
+				<App />
+			</LocalStoreContext.Provider>
+		</React.StrictMode>,
+		document.getElementById('root')
+	)
+})

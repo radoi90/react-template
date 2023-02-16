@@ -1,10 +1,17 @@
 import { Button } from '@mui/material'
 import { FC } from 'react'
 import styled from 'styled-components'
-import Folder, { FolderProps } from '../Folder'
+import Folder from '../Folder'
+
+interface FolderData {
+	id: string
+	name: string
+	images: string[]
+}
 
 type Props = {
-	folders: FolderProps[]
+	folders: FolderData[]
+	onNewFolderClick: () => void
 }
 
 const FoldersContainer = styled.div`
@@ -12,13 +19,19 @@ const FoldersContainer = styled.div`
 	flex-flow: row wrap;
 `
 
-const Archive: FC<Props> = ({ folders }) => (
+const Archive: FC<Props> = ({ folders, onNewFolderClick }) => (
 	<div>
 		<h1>Archive</h1>
-		<Button variant="outlined">New folder</Button>
+		<Button variant="outlined" onClick={onNewFolderClick}>
+			New folder
+		</Button>
 		<FoldersContainer>
-			{folders.map(folderProps => (
-				<Folder key={folderProps.name} {...folderProps} />
+			{folders.map(folder => (
+				<Folder
+					key={folder.id}
+					name={folder.name}
+					numberOfImages={folder.images.length}
+				/>
 			))}
 		</FoldersContainer>
 	</div>

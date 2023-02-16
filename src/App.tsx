@@ -12,6 +12,7 @@ import { API_KEY, API_URL, BASE64_IMAGE_HEADER } from './Constants'
 import Archive from './components/Archive'
 import { getAllFolders, PersitedFolder, saveImage } from './store'
 import { LocalStoreContext } from '.'
+import NewFolderContainer from './containers/NewFolder'
 
 function App() {
 	const { store, defaultFolderId } = useContext(LocalStoreContext)
@@ -21,8 +22,10 @@ function App() {
 
 	useEffect(() => {
 		async function initializeState() {
-			const folderData = await getAllFolders(store)
-			setFolderData(folderData)
+			if (store) {
+				const folderData = await getAllFolders(store)
+				setFolderData(folderData)
+			}
 		}
 
 		initializeState()
@@ -69,7 +72,9 @@ function App() {
 
 	const storeNewImageInDefaultFolder = useCallback(
 		async (image: string) => {
-			await saveImage(store, defaultFolderId, image)
+			if (store && defaultFolderId) {
+				await saveImage(store, defaultFolderId, image)
+			}
 		},
 		[defaultFolderId, store]
 	)
@@ -90,16 +95,37 @@ function App() {
 		[storeNewImageInDefaultFolder]
 	)
 
+	const handleNewFolderClick = useCallback(() => {
+		setIsNewFolderDialogOpen(true)
+	}, [])
+
+	const reloadFolderData = useCallback(() => {
+		if (store) {
+			getAllFolders(store).then(setFolderData)
+		}
+	}, [store])
+
+	const handleNewFolderFlowEnded = useCallback(
+		(folderCreated: boolean) => {
+			setIsNewFolderDialogOpen(false)
+			if (folderCreated) {
+				reloadFolderData()
+			}
+		},
+		[reloadFolderData]
+	)
+
 	return (
 		<div className="App">
-			<Archive folders={folderData} />
+			<Archive folders={folderData} onNewFolderClick={handleNewFolderClick} />
 			<header className="App-header">
 				{!result && <AddButton onImageAdd={onImageAdd} />}
 				{result && <img src={result} width={300} alt="result from the API" />}
 			</header>
-			<Fab color="primary" aria-label="add">
-				<AddIcon />
-			</Fab>
+			<NewFolderContainer
+				open={isNewFolderDialogOpen}
+				onFlowEnd={handleNewFolderFlowEnded}
+			/>
 		</div>
 	)
 }

@@ -1,7 +1,7 @@
 import { FolderData, PersitedFolder } from "./types"
 
 export async function createFolder(store: LocalForage, name: string) {
-	const folderId = await store.length()
+	const folderId = await (await store.length()).toString()
 	await store.setItem<FolderData>(folderId.toString(), { name, images: [] })
 	return folderId
 }
